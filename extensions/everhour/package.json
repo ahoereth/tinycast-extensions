@@ -26,7 +26,7 @@
       "name": "recentTasks",
       "title": "Recent Tasks",
       "subtitle": "Everhour",
-      "description": "List your recent tasks from the last seven days",
+      "description": "List recent tasks and search open tasks across projects",
       "mode": "view"
     },
     {
@@ -72,7 +72,7 @@
       "type": "password",
       "required": true,
       "title": "Everhour Token",
-      "description": "Your Everhour Token. You can find it in your Everhour profile",
+      "description": "Find your API token under Settings → [My Profile](https://app.everhour.com/#/account/profile) → Application Access.",
       "placeholder": "Enter your Everhour token"
     }
   ],

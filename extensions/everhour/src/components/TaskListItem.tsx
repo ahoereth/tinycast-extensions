@@ -21,12 +21,14 @@ export function TaskListItem({
   refreshActiveTimer,
   refreshRecords,
   recentTimeRecords = [],
+  recentDays = 7,
 }: {
   task: Task;
   hasActiveTimer: boolean;
   refreshActiveTimer: () => Promise<void>;
   refreshRecords: () => Promise<Array<Task>>;
   recentTimeRecords?: Array<Task>;
+  recentDays?: number;
 }) {
   const [timeRecords, setTimeRecords] = useState<Array<Task>>(recentTimeRecords);
 
@@ -64,7 +66,7 @@ export function TaskListItem({
 
   const resolveTaskTime = (): string => {
     if (task.time?.recent > 0) {
-      return `${formatSeconds(task.time.recent)} in the last 7 days`;
+      return `${formatSeconds(task.time.recent)} in the last ${recentDays} days`;
     }
     const record = timeRecords.find((timeRecord) => timeRecord.id === task.id);
     if (record && record.time.recent > 0) {

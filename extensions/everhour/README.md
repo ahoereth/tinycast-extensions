@@ -13,6 +13,12 @@ You will need your API Token:
 3. `Copy` "API Token"
 4. `Paste` in Extension Preferences
 
+## Task search
+
+Open **Recent Tasks** to see the last seven days, with the running task first. Select a project to narrow the list, or type at least two characters to search open tasks across accessible projects.
+
+Search results show matching tasks you worked on in the last 30 days first, newest work first, followed by other matches in Everhour's search order. Empty groups are hidden and tasks appear only once. **Load More Matches** increases the search limit from 50 up to 250; refine your query or select a project for narrower results. Existing timer and manual time-entry actions work in both groups.
+
 ## Tinycast development
 
 Requires macOS, Node.js 20+ and npm. From this extension's directory:
@@ -32,7 +38,7 @@ npm run tinycast-install-dev
 
 This builds, symlinks `dist` into Tinycast, and watches `src`, `assets`, `package.json` and `tsconfig.json` for rebuilds. **Close and reopen the Tinycast command after a rebuild**; this is not live UI reload. Restart Tinycast after changing command definitions. Ctrl+C stops the watcher but leaves the symlink installed. Run `npm run tinycast-install` to switch back to a standalone copy.
 
-Both commands choose the target channel when they start; `tinycast-install-dev` controls symlinking and watching, not the target app. Keep Tinycast Dev running to target `com.tinycast.app.dev`; quit it to target stable (`com.tinycast.app`). Existing installs are replaced without keeping backups; extension preferences are left untouched. Run `npm test` to check the installer without touching your real Tinycast installation.
+Both commands choose the target channel when they start; `tinycast-install-dev` controls symlinking and watching, not the target app. Keep Tinycast Dev running to target `com.tinycast.app.dev`; quit it to target stable (`com.tinycast.app`). Existing installs are replaced without keeping backups; extension preferences are left untouched. Run `npm test` to check task search and the installer without touching your real Everhour account or Tinycast installation.
 
 ## Upstream
 

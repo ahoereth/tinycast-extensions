@@ -24,35 +24,35 @@ const daysAgo = (days: number) => {
   return d;
 };
 
-export const getRecentTasks = async (userId = "me"): Promise<Task[]> => {
-  const [currentDate] = daysAgo(7).toISOString().split("T");
-  const response = await fetch(`https://api.everhour.com/users/${userId}/time?limit=1000&from=${currentDate}`, {
-    headers,
-  });
-
-  if (!response.ok) {
-    const error = (await response.json()) as ErrorResponse;
-    throw new Error(error.message);
-  }
-  const timeRecords = (await response.json()) as TimeRecordResp[];
-
-  if (timeRecords.length == 0) {
-    throw new Error("No recent tasks.");
-  }
-
-  const aggregatedTasks = timeRecords.reduce((agg: { [key: string]: Task }, { time, task }: TimeRecordResp) => {
-    if (!task || !task.time) return agg;
-    const { id, name, projects, time: taskTime } = task;
-    const { total = 0 } = taskTime;
-    if (!agg[id]) {
-      agg[id] = { id, name, projects, time: { total, recent: time } };
-    } else {
-      agg[id].time.recent += time;
+export const getRecentTasks = async (userId = "me", days = 7): Promise<Task[]> => {
+  const [currentDate] = daysAgo(days).toISOString().split("T");
+  const timeRecords: TimeRecordResp[] = [];
+  for (let page = 1; ; page++) {
+    const response = await fetch(
+      `https://api.everhour.com/users/${encodeURIComponent(userId)}/time?limit=1000&page=${page}&from=${currentDate}`,
+      { headers },
+    );
+    if (!response.ok) {
+      const error = (await response.json()) as ErrorResponse;
+      throw new Error(error.message);
     }
+    const records = (await response.json()) as TimeRecordResp[];
+    timeRecords.push(...records);
+    if (records.length < 1000) break;
+  }
+
+  const aggregatedTasks = timeRecords.reduce((agg: { [key: string]: Task }, { time, task, date }: TimeRecordResp) => {
+    if (!task) return agg;
+    if (!agg[task.id]) {
+      agg[task.id] = { ...task, time: { total: task.time?.total ?? 0, recent: 0 }, lastWorked: date };
+    }
+    const entry = agg[task.id];
+    entry.time.recent += time;
+    if (date > (entry.lastWorked ?? "")) entry.lastWorked = date;
     return agg;
   }, {});
 
-  return Object.values(aggregatedTasks);
+  return Object.values(aggregatedTasks).sort((a, b) => (b.lastWorked ?? "").localeCompare(a.lastWorked ?? ""));
 };
 
 export const getProjects = async (): Promise<Project[]> => {
@@ -85,6 +85,18 @@ export const getTasks = async (projectId: string): Promise<Task[]> => {
   const tasks = (await response.json()) as TaskResp[] as Task[];
 
   return tasks;
+};
+
+export const searchTasks = async (query: string, projectId = "", limit = 50, signal?: AbortSignal): Promise<Task[]> => {
+  const path = projectId ? `/projects/${encodeURIComponent(projectId)}/tasks/search` : "/tasks/search";
+  const params = new URLSearchParams({ query: query.trim(), limit: String(limit), searchInClosed: "false" });
+  const response = await fetch(`https://api.everhour.com${path}?${params}`, { headers, signal });
+  if (!response.ok) {
+    const error = (await response.json()) as ErrorResponse;
+    throw new Error(error.message);
+  }
+  const tasks = (await response.json()) as TaskResp[];
+  return tasks.map((task) => ({ ...task, time: { total: task.time?.total ?? 0, recent: 0 } }));
 };
 
 export const getCurrentTimer = async (): Promise<string | null> => {

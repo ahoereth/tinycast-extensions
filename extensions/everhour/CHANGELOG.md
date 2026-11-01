@@ -1,5 +1,12 @@
 # Everhour
 
+## [Task search] - 2026-11-01
+
+- Search open tasks from Recent Tasks, with a project filter and debounced requests.
+- Group matching tasks worked on in the last 30 days above other matches, without duplicates.
+- Load more search matches, up to 250, while preserving existing task actions.
+- Sort recent work by date and handle empty history without an error.
+
 ## [Tinycast support] - 2026-11-01
 
 - Imported the Raycast extension with upstream attribution.

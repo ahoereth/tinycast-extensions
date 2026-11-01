@@ -8,13 +8,18 @@ export type Task = {
   name: string;
   time: { total: number; recent: number };
   projects: Array<string>;
+  status?: string;
+  number?: string;
+  lastWorked?: string;
 };
 
 export type TaskResp = {
   id: string;
   name: string;
-  time: { total: number };
+  time?: { total: number };
   projects: Array<string>;
+  status?: string;
+  number?: string;
 };
 
 export type TimeRecordResp = {
