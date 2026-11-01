@@ -23,6 +23,28 @@ test("copy install replaces an existing install without keeping backups", async 
   });
 });
 
+test("a running Tinycast Dev receives installs without changing stable", async () => {
+  await fixture(async ({ run, destination, root }) => {
+    writeFileSync(join(root, "dev-running"), "");
+    mkdirSync(destination, { recursive: true });
+    writeFileSync(join(destination, "old.txt"), "stable");
+    assert.equal(await exited(run()), 0);
+    const devDestination = join(root, "Library/Application Support/com.tinycast.app.dev/extensions/everhour");
+    assert.equal(readFileSync(join(devDestination, "index.js"), "utf8"), "built");
+    assert.equal(readFileSync(join(destination, "old.txt"), "utf8"), "stable");
+    assert.deepEqual(readdirSync(destination), ["old.txt"]);
+  });
+});
+
+test("channel detection failures do not build or install into stable", async () => {
+  await fixture(async ({ run, root }) => {
+    writeFileSync(join(root, "detection-failed"), "");
+    assert.notEqual(await exited(run()), 0);
+    assert.equal(readdirSync(root).includes("builds"), false);
+    assert.equal(readdirSync(root).includes("Library"), false);
+  });
+});
+
 test("failed builds leave the existing install untouched", async () => {
   await fixture(async ({ run, destination, root }) => {
     mkdirSync(destination, { recursive: true });
@@ -33,8 +55,10 @@ test("failed builds leave the existing install untouched", async () => {
   });
 });
 
-test("dev install links dist and rebuilds after a source edit", async () => {
-  await fixture(async ({ run, destination, cwd, root }) => {
+test("watch mode targets running Dev, links dist and rebuilds after a source edit", async () => {
+  await fixture(async ({ run, cwd, root }) => {
+    writeFileSync(join(root, "dev-running"), "");
+    const destination = join(root, "Library/Application Support/com.tinycast.app.dev/extensions/everhour");
     assert.equal(await exited(run()), 0);
     const child = run("--dev");
     let output = "";
@@ -43,9 +67,9 @@ test("dev install links dist and rebuilds after a source edit", async () => {
     assert.equal(lstatSync(destination).isSymbolicLink(), true);
     assert.equal(realpathSync(destination), realpathSync(join(cwd, "dist")));
     assert.deepEqual(readdirSync(join(destination, "..")), ["everhour"]);
-    assert.deepEqual(readdirSync(join(root, "Library/Application Support/com.tinycast.app")), ["extensions"]);
+    assert.deepEqual(readdirSync(join(root, "Library/Application Support/com.tinycast.app.dev")), ["extensions"]);
     writeFileSync(join(cwd, "src", "index.tsx"), "changed");
-    await waitFor(() => readFileSync(join(root, "builds"), "utf8").trim().split("\n").length >= 2);
+    await waitFor(() => readFileSync(join(root, "builds"), "utf8").trim().split("\n").length >= 3);
   });
 });
 
@@ -73,6 +97,7 @@ async function fixture(fn) {
   writeFileSync(join(cwd, "package.json"), JSON.stringify({ name: "everhour", commands: [{ name: "index" }] }));
   writeFileSync(join(cwd, "dist", "index.js"), "built");
   writeFileSync(join(bin, "npm"), '#!/bin/sh\n[ ! -f "$HOME/fail" ] || exit 1\necho build >> "$HOME/builds"\n', { mode: 0o755 });
+  writeFileSync(join(bin, "pgrep"), '#!/bin/sh\n[ "$1" = -x ] && [ "$2" = "Tinycast Dev" ] || exit 2\n[ ! -f "$HOME/detection-failed" ] || exit 2\n[ -f "$HOME/dev-running" ]\n', { mode: 0o755 });
   const destination = join(root, "Library/Application Support/com.tinycast.app/extensions/everhour");
   const children = [];
   const run = (...args) => {

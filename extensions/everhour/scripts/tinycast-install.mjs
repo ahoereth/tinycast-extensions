@@ -6,7 +6,11 @@ import { spawnSync } from "node:child_process";
 const dev = process.argv.includes("--dev");
 const manifest = JSON.parse(readFileSync("package.json", "utf8"));
 const dist = resolve("dist");
-const parent = join(homedir(), "Library/Application Support/com.tinycast.app/extensions");
+const runningDev = spawnSync("pgrep", ["-x", "Tinycast Dev"]);
+if (runningDev.error) throw runningDev.error;
+if (runningDev.status !== 0 && runningDev.status !== 1) throw new Error("Could not detect the running Tinycast channel.");
+const bundleID = runningDev.status === 0 ? "com.tinycast.app.dev" : "com.tinycast.app";
+const parent = join(homedir(), "Library/Application Support", bundleID, "extensions");
 const destination = join(parent, manifest.name);
 
 function build() {

@@ -22,7 +22,7 @@ npm ci
 npm run tinycast-install
 ```
 
-This builds and copies the extension into the release Tinycast app's extension directory. Enable extensions in Tinycast and restart the app if the commands don't appear. Configure your Everhour token in the extension's preferences.
+This builds and copies the extension into Tinycast Dev's extension directory when Tinycast Dev is running, otherwise into stable Tinycast. If both apps are running, Dev wins. Enable extensions in the target app and restart it if the commands don't appear. Configure your Everhour token in that app's extension preferences.
 
 For local development:
 
@@ -32,7 +32,7 @@ npm run tinycast-install-dev
 
 This builds, symlinks `dist` into Tinycast, and watches `src`, `assets`, `package.json` and `tsconfig.json` for rebuilds. **Close and reopen the Tinycast command after a rebuild**; this is not live UI reload. Restart Tinycast after changing command definitions. Ctrl+C stops the watcher but leaves the symlink installed. Run `npm run tinycast-install` to switch back to a standalone copy.
 
-Quit Tinycast before switching installation modes. Existing installs are renamed to `everhour.backup-<timestamp>` alongside the new install; extension preferences are left untouched. These commands target `com.tinycast.app`, not Debug builds. Run `npm test` to check the installer without touching your real Tinycast installation.
+Both commands choose the target channel when they start; `tinycast-install-dev` controls symlinking and watching, not the target app. Keep Tinycast Dev running to target `com.tinycast.app.dev`; quit it to target stable (`com.tinycast.app`). Existing installs are replaced without keeping backups; extension preferences are left untouched. Run `npm test` to check the installer without touching your real Tinycast installation.
 
 ## Upstream
 
