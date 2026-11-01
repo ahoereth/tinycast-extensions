@@ -7,8 +7,8 @@ import { spawn } from "node:child_process";
 
 const script = new URL("./tinycast-install.mjs", import.meta.url);
 
-test("copy install preserves an existing install", async () => {
-  await fixture(async ({ run, destination }) => {
+test("copy install replaces an existing install without keeping backups", async () => {
+  await fixture(async ({ run, destination, root }) => {
     mkdirSync(destination, { recursive: true });
     writeFileSync(join(destination, "old.txt"), "keep me");
     const child = run();
@@ -17,9 +17,9 @@ test("copy install preserves an existing install", async () => {
     assert.equal(readFileSync(join(destination, "index.js"), "utf8"), "built");
     assert.equal(JSON.parse(readFileSync(join(destination, "package.json"), "utf8")).name, "everhour");
     assert.equal(readFileSync(join(destination, "assets", "icon.png"), "utf8"), "icon");
-    const backup = readdirSync(join(destination, "..")).find(name => name.startsWith("everhour.backup-"));
-    assert.ok(backup);
-    assert.equal(readFileSync(join(destination, "..", backup, "old.txt"), "utf8"), "keep me");
+    assert.deepEqual(readdirSync(join(destination, "..")), ["everhour"]);
+    assert.deepEqual(readdirSync(join(root, "Library/Application Support/com.tinycast.app")), ["extensions"]);
+    assert.equal(readdirSync(destination).includes("old.txt"), false);
   });
 });
 
@@ -35,12 +35,15 @@ test("failed builds leave the existing install untouched", async () => {
 
 test("dev install links dist and rebuilds after a source edit", async () => {
   await fixture(async ({ run, destination, cwd, root }) => {
+    assert.equal(await exited(run()), 0);
     const child = run("--dev");
     let output = "";
     child.stdout.on("data", data => { output += data; });
     await waitFor(() => output.includes("Watching"));
     assert.equal(lstatSync(destination).isSymbolicLink(), true);
     assert.equal(realpathSync(destination), realpathSync(join(cwd, "dist")));
+    assert.deepEqual(readdirSync(join(destination, "..")), ["everhour"]);
+    assert.deepEqual(readdirSync(join(root, "Library/Application Support/com.tinycast.app")), ["extensions"]);
     writeFileSync(join(cwd, "src", "index.tsx"), "changed");
     await waitFor(() => readFileSync(join(root, "builds"), "utf8").trim().split("\n").length >= 2);
   });

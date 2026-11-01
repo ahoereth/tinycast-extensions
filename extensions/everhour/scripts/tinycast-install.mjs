@@ -24,19 +24,26 @@ function install() {
   mkdirSync(parent, { recursive: true });
   const staging = mkdtempSync(join(parent, ".everhour-install-"));
   const staged = join(staging, "extension");
+  const previous = join(staging, "previous");
   try {
     if (dev) symlinkSync(dist, staged, "dir");
     else cpSync(dist, staged, { recursive: true });
+    let replaced = false;
     try {
-      const backup = `${destination}.backup-${Date.now()}`;
-      renameSync(destination, backup);
-      console.log(`Previous install saved at ${backup}`);
+      renameSync(destination, previous);
+      replaced = true;
     } catch (error) {
       if (error.code !== "ENOENT") throw error;
     }
-    renameSync(staged, destination);
+    try {
+      renameSync(staged, destination);
+    } catch (error) {
+      if (replaced) renameSync(previous, destination);
+      throw error;
+    }
+    rmSync(previous, { recursive: true, force: true });
   } finally {
-    rmSync(staging, { recursive: true, force: true });
+    if (!existsSync(previous)) rmSync(staging, { recursive: true, force: true });
   }
   console.log(`Installed at ${destination}`);
 }
