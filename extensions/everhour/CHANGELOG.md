@@ -1,5 +1,13 @@
 # Everhour
 
+## [Tinycast support] - 2026-11-01
+
+- Imported the Raycast extension with upstream attribution.
+- Added Tinycast install and watch-mode development commands.
+- Prefer Tinycast Dev for local installs when it is running; otherwise target stable.
+- Replace existing installs without retaining backups, preserving extension preferences.
+- Updated the Everhour logo, using PNG for Tinycast compatibility.
+
 ## [Fix] - 2026-08-21
 
 - Reduced background timer status refreshes to once per minute.
