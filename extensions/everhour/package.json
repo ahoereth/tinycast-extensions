@@ -3,7 +3,7 @@
   "name": "everhour",
   "title": "Everhour Time Tracking",
   "description": "Track time against projects",
-  "icon": "everhour-logo.png",
+  "icon": "everhour-logo.svg",
   "author": "farisaziz12",
   "contributors": [
     "ahoereth",

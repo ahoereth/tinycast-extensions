@@ -1,0 +1,15 @@
+<svg width="256" height="256" viewBox="0 0 16.0588 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="icon/everhour">
+<path id="Oval" fill-rule="evenodd" clip-rule="evenodd" d="M0 8C0 12.4183 3.59489 16 8.02941 16C12.4639 16 16.0588 12.4183 16.0588 8C16.0588 3.58172 12.4639 0 8.02941 0C3.59489 0 0 3.58172 0 8ZM14.8042 8C14.8042 11.7279 11.771 14.75 8.02941 14.75C4.28778 14.75 1.2546 11.7279 1.2546 8C1.2546 4.27208 4.28778 1.25 8.02941 1.25C11.771 1.25 14.8042 4.27208 14.8042 8Z" fill="var(--fill-0, #333333)"/>
+<ellipse id="Oval_2" cx="8.02941" cy="8" rx="0.836397" ry="0.833333" fill="var(--fill-0, #333333)"/>
+<ellipse id="Oval_3" cx="10.8683" cy="5.1715" rx="0.418198" ry="0.416667" fill="var(--fill-0, #333333)"/>
+<ellipse id="Oval_4" cx="8.02941" cy="4" rx="0.836397" ry="0.833333" fill="var(--fill-0, #333333)"/>
+<ellipse id="Oval_5" cx="12.0441" cy="8" rx="0.836397" ry="0.833333" fill="var(--fill-0, #333333)"/>
+<ellipse id="Oval_6" cx="10.8683" cy="10.8285" rx="0.836397" ry="0.833333" fill="var(--fill-0, #333333)"/>
+<ellipse id="Oval_7" cx="8.02941" cy="12" rx="0.836397" ry="0.833333" fill="var(--fill-0, #333333)"/>
+<ellipse id="Oval_8" cx="5.19051" cy="10.8285" rx="0.836397" ry="0.833333" fill="var(--fill-0, #333333)"/>
+<ellipse id="Oval_9" cx="4.01471" cy="8" rx="0.836397" ry="0.833333" fill="var(--fill-0, #333333)"/>
+<ellipse id="Oval_10" cx="5.19051" cy="5.1715" rx="0.836397" ry="0.833333" fill="var(--fill-0, #333333)"/>
+<path id="Shape" d="M7.43791 7.41067L10.5726 4.87683L11.1641 5.46617L8.62091 8.58933L7.43791 7.41067Z" fill="var(--fill-0, #333333)"/>
+</g>
+</svg>

@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="./assets/everhour-logo.png" width="200" height="200" />
+    <img src="./assets/everhour-logo.svg" width="200" height="200" />
 </p>
 
 # Everhour Time Tracking
