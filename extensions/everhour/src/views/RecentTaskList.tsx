@@ -152,13 +152,13 @@ export function RecentTaskList() {
       ) : (
         <>
           {recent.length > 0 ? (
-            <List.Section title={isSearch ? "Worked on in the last 30 days" : "Last 7 days"}>
+            <List.Section title={isSearch ? undefined : "Last 7 days"}>
               {recent.map((task) => renderTask(task, isSearch ? 30 : 7))}
             </List.Section>
           ) : null}
           {isSearch && groups.other.length > 0 ? (
             <List.Section
-              title="Other matching tasks"
+              title="Older than 30 days"
               subtitle={limit >= 250 && results.length >= limit ? "Refine your search for more results" : undefined}
             >
               {groups.other.map((task) => renderTask(task, 7))}
